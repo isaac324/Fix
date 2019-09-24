@@ -9,25 +9,32 @@
 import UIKit
 import AlamofireImage
 
-class MovieGridViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class MovieGridViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    //@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
     var movies = [[String:Any]]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.delegate = self
+
+        let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        collectionView.collectionViewLayout = flowLayout
         
-        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        flowLayout.minimumInteritemSpacing = 5
+        flowLayout.minimumLineSpacing = flowLayout.minimumInteritemSpacing
+        let cellsPerLine: CGFloat = 2
+        let interItemSpacingTotal = flowLayout.minimumInteritemSpacing * (cellsPerLine - 1)
         
-        layout.minimumLineSpacing = 4
-        layout.minimumInteritemSpacing = 4
+        let width = collectionView.frame.size.width / cellsPerLine - interItemSpacingTotal / cellsPerLine
+            
+        flowLayout.itemSize = CGSize(width: width, height: width * 3 / 2)
         
-        let width = (view.frame.size.width - layout.minimumInteritemSpacing * 2) / 3
-        layout.itemSize = CGSize(width: width, height: width * 3 / 2)
         
         let url = URL(string: "https://api.themoviedb.org/3/movie/297762/similar?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -38,17 +45,18 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource, UIC
                 print(error.localizedDescription)
             } else if let data = data {
                 let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-                
+
                 self.movies = dataDictionary["results"] as! [[String:Any]]
-                
+
                 self.collectionView.reloadData()
-                
+
             }
         }
         task.resume()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(movies.count)
         return movies.count
     }
     
@@ -61,7 +69,7 @@ class MovieGridViewController: UIViewController, UICollectionViewDataSource, UIC
         let posterPath = movie["poster_path"] as! String
         let posterUrl = URL(string: baseUrl + posterPath)
         
-        cell.posterView.af_setImage(withURL: posterUrl!)
+        cell.movieposterView.af_setImage(withURL: posterUrl!)
         
         return cell
     }
