@@ -47,6 +47,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         }
         task.resume()
         
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 100
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -92,6 +94,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         detailsViewController.movie = movie
         
         tableView.deselectRow(at: indexPath, animated: true)
+        
     }
     
 

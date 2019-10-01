@@ -15,7 +15,7 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var BackdropView: UIImageView!
     @IBOutlet weak var posterView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var synopsisLabel: UILabel!
+    @IBOutlet weak var synopsisLabel: UITextView!
     
     var movie: [String:Any]!
 
@@ -39,6 +39,7 @@ class MovieDetailsViewController: UIViewController {
         let backdropUrl = URL(string: "https://image.tmdb.org/t/p/w780" + backdropPath)
         
         BackdropView.af_setImage(withURL: backdropUrl!)
+        
     }
     
 
